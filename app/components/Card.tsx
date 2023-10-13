@@ -1,16 +1,29 @@
+import { Tag } from '@prisma/client';
 import { NextPage } from 'next';
 import Link from 'next/link';
+interface Props {
+  post: {
+    id: string;
+    title: string;
+    content: string;
+    createdAt: true;
+    updatedAt: true;
+    tag: Tag;
+  };
+}
 
-interface Props {}
+const Card: NextPage<Props> = ({ post }) => {
+  const { id, title, content, tag } = post;
 
-const Card: NextPage<Props> = ({}) => {
   return (
     <div className='card w-full bg-base-100 shadow-xl'>
       <div className='card-body'>
-        <h2 className='card-title'>Card title!</h2>
-        <p>If a dog chews shoes whose shoes does he choose?</p>
+        <h2 className='card-title'>{title}</h2>
+        <p className=''>{content}</p>
+
+        <p className='badge badge-ghost'>{tag.name}</p>
         <div className='card-actions justify-end'>
-          <Link href={'/blog/1'} className='btn btn-primary'>
+          <Link href={`/blog/${id}`} className='btn btn-primary'>
             Read more
           </Link>
         </div>

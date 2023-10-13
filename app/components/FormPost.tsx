@@ -1,15 +1,33 @@
 'use client';
 
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
 import { NextPage } from 'next';
 import { useForm, SubmitHandler } from 'react-hook-form';
 
 interface Props {
   submit: SubmitHandler<InputType>;
   isEditing?: boolean;
+  isCreating?: boolean;
 }
 
-const FormPost: NextPage<Props> = ({ submit, isEditing }) => {
+const FormPost: NextPage<Props> = ({ submit, isEditing, isCreating }) => {
   const { register, handleSubmit } = useForm<InputType>();
+
+  // fetch tags
+  const { isLoading, data: tags } = useQuery({
+    queryKey: ['tags'],
+    queryFn: async () => {
+      const res = await axios.get('/api/tags');
+      return res.data;
+    },
+  });
+
+  const CreateBtn = isCreating ? (
+    <span className='loading loading-spinner loading-sm'></span>
+  ) : (
+    'Create'
+  );
 
   return (
     <form
@@ -28,18 +46,27 @@ const FormPost: NextPage<Props> = ({ submit, isEditing }) => {
         placeholder='Post content'
       ></textarea>
 
-      <select
-        {...register('tag', { required: true })}
-        className='select select-bordered w-full max-w-lg'
-      >
-        <option value={''}>Select a Tag?</option>
-        <option>JavaScript</option>
-        <option>TypeScript</option>
-        <option>Python</option>
-        <option>Java</option>
-      </select>
+      {isLoading ? (
+        <span className='loading loading-dots loading-md'></span>
+      ) : (
+        <select
+          {...register('tag', { required: true })}
+          className='select select-bordered w-full max-w-lg'
+        >
+          <option value={''}>Select a Tag?</option>
+
+          {tags?.map((tag: any) => {
+            return (
+              <option key={tag.id} value={tag.id}>
+                {tag.name}
+              </option>
+            );
+          })}
+        </select>
+      )}
+
       <button type='submit' className='btn btn-primary w-full max-w-lg'>
-        {isEditing ? 'UPDATE' : 'CREATE'}
+        {isEditing ? 'UPDATE' : CreateBtn}
       </button>
     </form>
   );

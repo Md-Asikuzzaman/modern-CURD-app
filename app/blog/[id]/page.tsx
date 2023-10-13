@@ -1,20 +1,36 @@
 import BackButton from '@/app/components/BackButton';
 import ButtonActions from '@/app/components/ButtonActions';
+import prisma from '@/app/lib/prisma';
 import { NextPage } from 'next';
 
-interface Props {}
+interface Props {
+  params: {
+    id: string;
+  };
+}
 
-const Page: NextPage<Props> = ({}) => {
+const Page: NextPage<Props> = async ({ params }) => {
+  const { id } = params;
+
+  const post = await prisma.post.findUnique({
+    where: { id },
+    select: {
+      id: true,
+      title: true,
+      content: true,
+      tag: true,
+    },
+  });
+
   return (
     <div>
       <BackButton />
-      <h2 className='text-2xl font-bold my-4'>Post Title</h2>
-      <ButtonActions />
-      <p className='text-slate-600'>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur
-        voluptates cum sapiente libero officia ullam necessitatibus facere
-        facilis temporibus odit?
-      </p>
+      <div className="flex items-center justify-between mt-5">
+        <h2 className='text-2xl font-bold'>{post?.title}</h2>
+        <ButtonActions id={post?.id} />
+      </div>
+      <p className='text-slate-600 my-10'>{post?.content}</p>
+      <p className='badge badge-ghost'>{post?.tag?.name}</p>
     </div>
   );
 };

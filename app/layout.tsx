@@ -2,6 +2,8 @@ import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import Navbar from './components/Navbar';
+import StackProvider from './components/StackProvider';
+import ToasterProvider from './components/ToasterProvider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -18,8 +20,12 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body suppressHydrationWarning={true} className={inter.className}>
-        <Navbar />
-        <div className='container w-full pt-12'>{children}</div>
+        <StackProvider>
+          <ToasterProvider>
+            <Navbar />
+            <div className='container w-full pt-12'>{children}</div>
+          </ToasterProvider>
+        </StackProvider>
       </body>
     </html>
   );
