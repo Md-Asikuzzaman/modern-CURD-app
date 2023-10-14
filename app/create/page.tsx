@@ -22,9 +22,9 @@ const Page: NextPage<Props> = ({}) => {
     reset();
   };
 
-  const { mutate: createPost, isLoading: isCreating } = useMutation({
+  const { mutate: createPost, isLoading: isLoadingSubmit } = useMutation({
     mutationFn: (newPost: InputType) => {
-      return axios.post('/api/posts/create', newPost);
+      return axios.post('/api/posts', newPost);
     },
 
     onError: (error) => {
@@ -42,7 +42,7 @@ const Page: NextPage<Props> = ({}) => {
     <div>
       <BackButton />
       <h1 className='text-2xl my-4 font-bold text-center'>Add new post</h1>
-      <FormPost isCreating={isCreating} submit={handleCreatePost} />
+      <FormPost isLoadingSubmit={isLoadingSubmit} submit={handleCreatePost} />
     </div>
   );
 };

@@ -8,11 +8,21 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 interface Props {
   submit: SubmitHandler<InputType>;
   isEditing?: boolean;
-  isCreating?: boolean;
+  isLoadingSubmit?: boolean;
+  isLoadingUpdate?: boolean;
+  initialValue?: InputType;
 }
 
-const FormPost: NextPage<Props> = ({ submit, isEditing, isCreating }) => {
-  const { register, handleSubmit } = useForm<InputType>();
+const FormPost: NextPage<Props> = ({
+  submit,
+  isEditing,
+  isLoadingSubmit,
+  isLoadingUpdate,
+  initialValue,
+}) => {
+  const { register, handleSubmit } = useForm<InputType>({
+    defaultValues: initialValue,
+  });
 
   // fetch tags
   const { isLoading, data: tags } = useQuery({
@@ -23,11 +33,17 @@ const FormPost: NextPage<Props> = ({ submit, isEditing, isCreating }) => {
     },
   });
 
-  const CreateBtn = isCreating ? (
-    <span className='loading loading-spinner loading-sm'></span>
-  ) : (
-    'Create'
-  );
+  const setLoader =
+    isLoadingSubmit || isLoadingUpdate ? (
+      <>
+        <span className='loading loading-spinner loading-sm'></span>
+        {isLoadingSubmit ? 'Creating...' : 'Updating...'}
+      </>
+    ) : isEditing ? (
+      'UPDATE'
+    ) : (
+      'SUBMIT'
+    );
 
   return (
     <form
@@ -50,7 +66,7 @@ const FormPost: NextPage<Props> = ({ submit, isEditing, isCreating }) => {
         <span className='loading loading-dots loading-md'></span>
       ) : (
         <select
-          {...register('tag', { required: true })}
+          {...register('tagId', { required: true })}
           className='select select-bordered w-full max-w-lg'
         >
           <option value={''}>Select a Tag?</option>
@@ -66,7 +82,7 @@ const FormPost: NextPage<Props> = ({ submit, isEditing, isCreating }) => {
       )}
 
       <button type='submit' className='btn btn-primary w-full max-w-lg'>
-        {isEditing ? 'UPDATE' : CreateBtn}
+        {setLoader}
       </button>
     </form>
   );

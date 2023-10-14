@@ -19,7 +19,7 @@ const Card: NextPage<Props> = ({ post }) => {
     <div className='card w-full bg-base-100 shadow-xl'>
       <div className='card-body'>
         <h2 className='card-title'>{title}</h2>
-        <p className=''>{content}</p>
+        <p className='climb'>{content}</p>
 
         <p className='badge badge-ghost'>{tag.name}</p>
         <div className='card-actions justify-end'>

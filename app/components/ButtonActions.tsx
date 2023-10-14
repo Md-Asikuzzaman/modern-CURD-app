@@ -9,19 +9,15 @@ import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 interface Props {
-  id?: string;
+  id: string | any;
 }
 
 const ButtonActions: NextPage<Props> = ({ id }) => {
   const router = useRouter();
 
-  const handleDelete = (id: any) => {
-    deletePost(id);
-  };
-
-  const { mutate: deletePost, isLoading: isCreating } = useMutation({
+  const { mutate: deletePost, isLoading } = useMutation({
     mutationFn: (id) => {
-      return axios.delete(`/api/posts/delete/${id}`);
+      return axios.delete(`/api/posts/${id}`);
     },
 
     onError: (error) => {
@@ -41,8 +37,16 @@ const ButtonActions: NextPage<Props> = ({ id }) => {
         <Pencil />
         Edit
       </Link>
-      <button onClick={() => handleDelete(id)} className='btn btn-error'>
-        <Trash /> Delete
+      <button onClick={() => deletePost(id)} className='btn btn-error'>
+        {isLoading && <span className='loading loading-spinner'></span>}
+
+        {isLoading ? (
+          'Loading...'
+        ) : (
+          <>
+            <Trash /> Delete
+          </>
+        )}
       </button>
     </div>
   );
