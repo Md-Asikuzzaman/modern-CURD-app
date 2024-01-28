@@ -1,10 +1,20 @@
 import Card from './components/Card';
 
 export default async function Home() {
-  const res = await fetch('https://modern-curd.vercel.app/api/posts', {
-    cache: 'no-cache',
-  });
-  const posts = await res.json();
+  var posts: any[] = [];
+
+  try {
+    const res = await fetch('http://localhost:3000/api/posts', {
+      cache: 'no-cache',
+    });
+    posts = (await res.json()) as any[];
+  } catch (error) {
+    console.log(error);
+  }
+
+  if (posts.length <= 0) {
+    return <h1>No Data</h1>;
+  }
 
   return (
     <main className='grid items-center justify-center md:grid-cols-2 lg:grid-cols-3 gap-5 py-10'>
