@@ -4,7 +4,7 @@ export default async function Home() {
   var posts: any[] = [];
 
   try {
-    const res = await fetch('http://localhost:3000/api/posts', {
+    const res = await fetch('https://modern-curd.vercel.app/api/posts', {
       cache: 'no-cache',
     });
     posts = (await res.json()) as any[];
